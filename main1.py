@@ -1,233 +1,359 @@
 import streamlit as st
 import pandas as pd
 from io import BytesIO
+import re
 
-# ---------- Helpers ----------
-NA_TOKENS = {"", "na", "n/a", "null", "nan"}
+# ----------------------------------------------------------------------
+# UI Configuration
+# ----------------------------------------------------------------------
+st.set_page_config(page_title="AutomationHub Data Processor", layout="wide")
+st.title("AutomationHub Data Processor Grok - Final")
 
-def is_missing(val):
-    if pd.isna(val):
-        return True
-    return str(val).strip().lower() in NA_TOKENS
+# ----------------------------------------------------------------------
+# Helper Constants & Functions
+# ----------------------------------------------------------------------
+NA_TOKENS = {"", "na", "n/a", "null", "nan", "<NA>", "none", "n.a."}
 
-def norm_text(val):
-    return str(val).strip() if pd.notna(val) else ""
+def norm_text(v):
+    """Normalize any value to a clean string; treat missing/NA as empty."""
+    return "" if pd.isna(v) else str(v).strip()
 
-def append_warning(existing, new):
-    a, b = (existing or "").strip(), (new or "").strip()
-    if not a: return b
-    if not b: return a
-    return f"{a}, {b}"
+def is_missing(v):
+    """Check if a value is considered missing or placeholder."""
+    return norm_text(v).lower() in NA_TOKENS
 
-# ---------- 1️⃣ Solution Deployed Date ----------
+def fmt_date(d):
+    """Format a date to MM/DD/YYYY; gracefully handle invalid inputs."""
+    if pd.isna(d):
+        return ""
+    if isinstance(d, str):
+        d = pd.to_datetime(d, errors="coerce")
+    return d.strftime("%m/%d/%Y") if pd.notna(d) else ""
+
+def dedupe_preserve_order(tokens):
+    """Remove duplicates while preserving original order (case-insensitive)."""
+    seen = set()
+    out = []
+    for t in tokens:
+        tl = t.lower()
+        if tl not in seen:
+            seen.add(tl)
+            out.append(t)
+    return out
+
+# ----------------------------------------------------------------------
+# 1) Final Solution Deployed Date
+# ----------------------------------------------------------------------
 def process_solution_deployed_date(df):
-    cols = [c for c in df.columns if c.startswith("Solution Deployed Date")]
+    """
+    Identify all columns matching 'Solution Deployed Date[.n]' pattern,
+    take the earliest valid date per row, and format it.
+    Warn if multiple distinct dates exist in the same row.
+    """
+    pattern = re.compile(r'^solution deployed date(\.?\d*)?$', re.IGNORECASE)
+    cols = [c for c in df.columns if pattern.match(c)]
     if not cols:
-        return pd.DataFrame({
-            "Final Solution Deployed Date":[pd.NA]*len(df),
-            "Warnings_Date":[""]*len(df)
-        })
+        return df, pd.Series([""] * len(df), dtype="string")
 
+    # Parse all matching columns as datetime
     df_dates = df[cols].apply(pd.to_datetime, errors="coerce")
-    finals, warns = [], []
+    earliest = df_dates.min(axis=1, skipna=True)
 
-    for _, row in df_dates.iterrows():
-        valid = [d for d in row.values if pd.notna(d)]
-        if not valid:
-            finals.append(pd.NA); warns.append("")
-        elif len(set(valid)) == 1:
-            finals.append(min(valid)); warns.append("")
-        else:
-            finals.append(min(valid))
+    # Generate warnings for conflicting dates
+    warns = []
+    for i in range(len(df)):
+        vals = [v for v in df_dates.iloc[i].tolist() if pd.notna(v)]
+        if len(vals) > 1 and len(set(vals)) > 1:
             warns.append("Multiple Solution Deployed Dates in upstream data")
+        else:
+            warns.append("")
 
-    formatted = pd.Series(pd.to_datetime(finals, errors="coerce")).dt.strftime("%m/%d/%Y")
-    return pd.DataFrame({
-        "Final Solution Deployed Date": formatted,
-        "Warnings_Date": warns
-    })
+    df["Final Solution Deployed Date"] = [fmt_date(d) for d in earliest]
+    return df, pd.Series(warns, dtype="string")
 
-# ---------- 2️⃣ Process Execution Location ----------
+# ----------------------------------------------------------------------
+# 2) Final Process Execution Location
+# ----------------------------------------------------------------------
 def process_execution_location(df):
-    cols = [c for c in df.columns if c.startswith("Process Execution Location")]
+    """
+    Consolidate all 'Process Execution Location*' columns.
+    Dedupe values (case-insensitive), keep first occurrence if multiple,
+    warn if conflicting values exist.
+    """
+    cols = [c for c in df.columns if c.strip().lower().startswith("process execution location")]
     if not cols:
-        return pd.DataFrame({
-            "Final Process Execution Location":[pd.NA]*len(df),
-            "Warnings_Location":[""]*len(df)
-        })
-
-    def normalized(v):
-        return None if is_missing(v) else norm_text(v)
+        return df, pd.Series([""] * len(df), dtype="string")
 
     finals, warns = [], []
     for _, row in df.iterrows():
-        vals = [normalized(row[c]) for c in cols if normalized(row[c])]
-        if not vals:
-            finals.append(pd.NA); warns.append("")
-        elif len({v.lower() for v in vals}) == 1:
-            finals.append(vals[0]); warns.append("")
+        vals = []
+        for c in cols:
+            v = norm_text(row.get(c, ""))
+            if not is_missing(v):
+                vals.append(v)
+
+        # Dedupe while preserving order
+        uniq_norm = []
+        seen = set()
+        for v in vals:
+            vn = v.strip().lower()
+            if vn not in seen:
+                seen.add(vn)
+                uniq_norm.append(v)
+
+        if len(vals) == 0:
+            finals.append("")
+            warns.append("")
+        elif len(uniq_norm) == 1:
+            finals.append(vals[0].strip())
+            warns.append("")
         else:
-            finals.append(vals[0])
+            finals.append(vals[0].strip())
             warns.append("Multiple Process Execution Locations in upstream data")
 
-    return pd.DataFrame({
-        "Final Process Execution Location": finals,
-        "Warnings_Location": warns
-    })
+    df["Final Process Execution Location"] = finals
+    return df, pd.Series(warns, dtype="string")
 
-# ---------- 3️⃣ Digital Tools (Consolidated + Reporting) ----------
+# ----------------------------------------------------------------------
+# 3) Consolidated Tools + Tool for Reporting + Reason
+# ----------------------------------------------------------------------
 def process_tools(df):
-    tool_cols = [c for c in df.columns if str(c).strip().lower().startswith("what digital tools will be used")]
-    bu_col  = next((c for c in df.columns if c.strip().lower()=="business unit"), None)
-    div_col = next((c for c in df.columns if c.strip().lower()=="division"), None)
-    idea_col= next((c for c in df.columns if c.strip().lower()=="idea type"), None)
-    sol_col = next((c for c in df.columns if c.strip().lower()=="solution type"), None)
-    date_col= next((c for c in df.columns if c.strip().lower() in {"date submitted","datesubmitted"}), None)
+    """
+    Core business logic for:
+    - Consolidated Tools: deduped, cleaned, placeholder-handled
+    - Tool for Reporting: BU/Division/Idea/Solution rules + consolidation
+    - Reason: audit trail of decision path
+    - Fallback: UiPath for legacy records (Ops/Finance + year <= 2023)
+    """
+    # --- Column Detection ---
+    tool_cols = [c for c in df.columns if c.strip().lower().startswith("what digital tools will be used")]
+    bu_col    = next((c for c in df.columns if c.strip().lower() == "business unit"), None)
+    div_col   = next((c for c in df.columns if c.strip().lower() == "division"), None)
+    idea_col  = next((c for c in df.columns if c.strip().lower() == "idea type"), None)
+    sol_col   = next((c for c in df.columns if c.strip().lower() in {"solution type new", "solution type"}), None)
+    date_col  = next((c for c in df.columns if c.strip().lower() in {"date submitted", "datesubmitted"}), None)
 
     if not tool_cols:
-        return pd.DataFrame({
-            "Expected Consolidated Tools":[pd.NA]*len(df),
-            "Expected Tool for Reporting":[pd.NA]*len(df),
-            "Warnings_Tools":[""]*len(df)
-        })
+        df["Consolidated Tools"] = ""
+        df["Tool for Reporting"] = ""
+        df["Reason"] = ""
+        return df, pd.Series([""] * len(df), dtype="string")
 
-    cons_list, tfr_list, warns = [], [], []
-    placeholders = {"other","tbd","other/tbd"}
+    placeholders = {"other", "tbd", "other/tbd", "other - tbd", "tbd - other"}
+    na_tokens = NA_TOKENS
 
-    def clean_token(tok):
-        t = norm_text(tok)
-        if "other process reengineering" in t.lower():
-            return "Process Reengineering"
-        if "other process decommission" in t.lower():
-            return "Process Decommission"
-        return t
+    cons_list, tfr_list, reason_list, warns = [], [], [], []
 
     for _, row in df.iterrows():
-        raw = [clean_token(row[c]) for c in tool_cols if not is_missing(row[c])]
-        consolidated = "-".join(raw) if raw else pd.NA
+        # === Step 1: Build Consolidated Tools ===
+        raw_tools = []
+        for c in tool_cols:
+            v = norm_text(row.get(c, ""))
+            if v.lower() not in na_tokens and v.strip():
+                raw_tools.append(v.strip())
 
-        if isinstance(consolidated, str):
-            text = consolidated.lower().strip().replace("–","-")
-            if "other" in text and "process reengineering" in text:
-                consolidated = "Process Reengineering"
-            elif "other" in text and "process decommission" in text:
-                consolidated = "Process Decommission"
+        # Dedupe preserving order
+        seen = set()
+        tokens = []
+        for t in raw_tools:
+            tl = t.lower()
+            if tl not in seen:
+                seen.add(tl)
+                tokens.append(t)
 
-        bu, div = norm_text(row.get(bu_col,"")), norm_text(row.get(div_col,""))
-        idea, sol = norm_text(row.get(idea_col,"")), norm_text(row.get(sol_col,""))
-        tfr = pd.NA
+        consolidated = " - ".join(tokens) if tokens else ""
 
-        # ---------- Step 2: Business Rules ----------
-        if bu.lower() == "operations":
-            if idea.lower() == "user-led" and sol.lower() == "process re-engineering":
+        # --- Special Replacements ---
+        consolidated = re.sub(r"\bOther\s*-\s*Process Reengineering\b", "Process Reengineering", consolidated, flags=re.IGNORECASE)
+        consolidated = re.sub(r"\bProcess Reengineering\s*-\s*Other\b", "Process Reengineering", consolidated, flags=re.IGNORECASE)
+        consolidated = re.sub(r"\bOther\s*-\s*Process Decommission\b", "Process Decommission", consolidated, flags=re.IGNORECASE)
+        consolidated = re.sub(r"\bProcess Decommission\s*-\s*Other\b", "Process Decommission", consolidated, flags=re.IGNORECASE)
+
+        # === Normalize Contextual Fields ===
+        bu   = norm_text(row.get(bu_col, "")).strip().lower()
+        div  = norm_text(row.get(div_col, "")).strip().lower()
+        idea = norm_text(row.get(idea_col, "")).strip().lower().replace(" ", "").replace("-", "")
+        sol  = norm_text(row.get(sol_col, "")).strip().lower().replace(" ", "").replace("-", "")
+
+        # === Extract Year from Date Submitted (year-only input) ===
+        year_val = row.get(date_col)
+        submitted_year = None
+        if pd.notna(year_val):
+            match = re.search(r'\b(19|20)\d{2}\b', str(year_val))
+            if match:
+                submitted_year = int(match.group(0))
+
+        # === Step 2: Apply BU/Division Rules ===
+        tfr = consolidated
+        reason = "Default rule (no BU match)"
+
+        if bu == "operations":
+            if idea == "userled" and "processreengineering" in sol:
                 tfr = "Process Reengineering"
-            elif idea.lower() == "user-led" and sol.lower() == "systemic enhancements":
+                reason = "Open PR Rule override"
+            elif idea == "userled" and "systemicenhancements" in sol:
                 tfr = "System Enhancements"
-            elif idea.lower() == "user-led" and sol.lower() == "tooling":
+                reason = "Ops System Enhancements rule"
+            elif idea == "userled" and "tooling" in sol:
                 tfr = consolidated
-            elif idea.lower() == "pro-dev":
+                reason = "Ops Tooling rule"
+            elif idea == "prodev":
                 tfr = consolidated
-            elif idea.lower() == "core platform transformation":
+                reason = "Ops Pro-Dev rule"
+            elif idea == "coreplatformtransformation":
                 tfr = "Core Platform Transformation"
+                reason = "Ops CPT rule"
             else:
                 tfr = consolidated
+                reason = "Ops default rule"
 
-        elif bu.lower() == "company" and div.lower() == "finance":
-            if idea.lower() == "new finance tactical automation" and sol.lower() == "systemic enhancements":
+        elif bu == "company" and div == "finance":
+            if idea == "newfinancetacticalautomation" and "systemicenhancements" in sol:
                 tfr = consolidated
-            elif idea.lower() == "new finance technology led solution":
+                reason = "Finance Tactical rule"
+            elif idea == "newfinancetechnologyledsolution":
                 tfr = "Core Platform Transformation"
+                reason = "Finance Tech-Led override"
             else:
                 tfr = consolidated
-
-        elif bu.lower() == "business":
-            if idea.lower() == "strategic transformation":
-                tfr = "Core Platform Transformation"
-            else:
-                tfr = consolidated
+                reason = "Finance default rule"
         else:
             tfr = consolidated
+            reason = "Default rule (no BU match)"
 
-        # ---------- Step 3: Consolidation Logic ----------
-        toks = [t.strip() for t in str(consolidated).split("-") if t and not is_missing(t)]
-        norm_toks = [t for t in toks if t.lower() not in placeholders]
+        # === Step 3: Consolidation Logic (only if TFR == Consolidated) ===
+        if tfr == consolidated and consolidated:
+            parts = [p.strip() for p in re.split(r"\s*-\s*", consolidated) if p.strip()]
+            parts = dedupe_preserve_order(parts)
 
-        if pd.notna(tfr) and pd.notna(consolidated) and str(tfr) == str(consolidated):
-            if len(norm_toks) == 0:
-                tfr = pd.NA
-            elif len(norm_toks) == 1:
-                tfr = norm_toks[0]
-            elif len(norm_toks) == 2:
-                a,b = norm_toks; al,bl = a.lower(), b.lower()
-                if ("process reengineering" in {al,bl}) and ("other" in {al,bl}):
+            if len(parts) == 0:
+                tfr = ""
+                reason = "No tools after consolidation"
+            elif len(parts) == 1:
+                tfr = parts[0]
+                reason = "Single tool"
+            elif len(parts) == 2:
+                a, b = parts
+                al, bl = a.lower(), b.lower()
+                if {al, bl} == {"process reengineering", "other"}:
                     tfr = "Process Reengineering"
-                elif ("process reengineering" in {al,bl}) and not (al in placeholders or bl in placeholders):
-                    tfr = b if al=="process reengineering" else a
-                elif (al in placeholders or bl in placeholders):
-                    tfr = b if al in placeholders else a
+                    reason = "Consolidation Case 2A"
+                elif al == "process reengineering" and bl not in placeholders:
+                    tfr = b
+                    reason = "Consolidation Case 2B"
+                elif bl == "process reengineering" and al not in placeholders:
+                    tfr = a
+                    reason = "Consolidation Case 2B"
+                elif al in placeholders and bl not in placeholders:
+                    tfr = b
+                    reason = "Consolidation Case 2C"
+                elif bl in placeholders and al not in placeholders:
+                    tfr = a
+                    reason = "Consolidation Case 2C"
                 else:
-                    tfr = f"{a}-{b}"
+                    tfr = f"{a} - {b}"
+                    reason = "Consolidation Case 2D"
             else:
                 tfr = "Multiple"
+                reason = "More than 2 tools"
 
-        # ---------- Step 4: Fallback ----------
-        if (pd.isna(tfr) or str(tfr).strip()==""):
-            try:
-                ds = pd.to_datetime(row.get(date_col), errors="coerce")
-                if pd.notna(ds) and ds.year <= 2023 and (bu.lower()=="operations" or div.lower()=="finance"):
-                    tfr = "UiPath"
-            except:
-                pass
+        # === Step 4: Fallback Logic — Only if Tool for Reporting is still blank ===
+        if not tfr.strip():
+            is_ops_or_finance = (bu == "operations") or (bu == "company" and div == "finance")
+            if submitted_year is not None and submitted_year <= 2023 and is_ops_or_finance:
+                tfr = "UiPath"
+                reason = "Fallback rule"
+            elif submitted_year is not None and submitted_year <= 2023:
+                tfr = "UiPath"
+                reason = "Fallback rule"
+            else:
+                if submitted_year is None:
+                    reason = "No date or invalid date"
+                elif submitted_year > 2023:
+                    reason = "No fallback (Date > 2023)"
+                # else: year <= 2023 but not Ops/Finance → reason remains from earlier
 
-        tfr = str(tfr).replace(",","-") if pd.notna(tfr) else pd.NA
+        # Final cleanup: ensure no commas
+        tfr = tfr.replace(",", " - ").strip()
+
         cons_list.append(consolidated)
         tfr_list.append(tfr)
+        reason_list.append(reason)
         warns.append("")
 
-    return pd.DataFrame({
-        "Expected Consolidated Tools": cons_list,
-        "Expected Tool for Reporting": tfr_list,
-        "Warnings_Tools": warns
-    })
+    df["Consolidated Tools"] = cons_list
+    df["Tool for Reporting"] = tfr_list
+    df["Reason"] = reason_list
+    return df, pd.Series(warns, dtype="string")
 
-# ---------- Combine All ----------
+# ----------------------------------------------------------------------
+# Pipeline Orchestration
+# ----------------------------------------------------------------------
 def merge_all(df):
-    df1 = process_solution_deployed_date(df)
-    df2 = process_execution_location(df)
-    df3 = process_tools(df)
-    combined = pd.concat([df, df1, df2, df3], axis=1)
-    combined["Processing Warnings"] = ""
-    for w in ["Warnings_Date","Warnings_Location","Warnings_Tools"]:
-        if w in combined.columns:
-            combined["Processing Warnings"] = [
-                append_warning(a,b) for a,b in zip(combined["Processing Warnings"], combined[w].fillna(""))
-            ]
-    combined.drop(columns=["Warnings_Date","Warnings_Location","Warnings_Tools"], inplace=True, errors="ignore")
-    tail = ["Final Solution Deployed Date","Final Process Execution Location",
-            "Expected Consolidated Tools","Expected Tool for Reporting","Processing Warnings"]
-    return combined[[c for c in combined.columns if c not in tail]+tail]
+    """
+    Execute processing steps in order:
+    1. Solution Deployed Date
+    2. Execution Location
+    3. Tools + Reporting
+    Combine warnings into a single column.
+    """
+    df1, w1 = process_solution_deployed_date(df.copy())
+    df2, w2 = process_execution_location(df1)
+    df3, w3 = process_tools(df2)
 
-# ---------- Streamlit UI ----------
-st.set_page_config(page_title="Process Data Portal", layout="wide")
-st.title("📊 Process Optimization Data Processor-main 1")
-st.markdown("Upload an **Excel or CSV** file to automatically derive all computed fields and warnings.")
+    df3["Processing Warnings"] = [
+        ", ".join(filter(None, [a.strip(), b.strip(), c.strip()]))
+        for a, b, c in zip(w1, w2, w3)
+    ]
+    return df3
 
-uploaded_file = st.file_uploader("Upload your file", type=["xlsx","csv"])
+# ----------------------------------------------------------------------
+# Streamlit App Runtime
+# ----------------------------------------------------------------------
+uploaded_file = st.file_uploader("Upload your Excel/CSV file", type=["xlsx", "csv"])
 
 if uploaded_file:
-    df = pd.read_excel(uploaded_file) if uploaded_file.name.endswith(".xlsx") else pd.read_csv(uploaded_file)
-    st.success(f"✅ File loaded successfully: {df.shape[0]} rows, {df.shape[1]} columns")
-    df_out = merge_all(df)
-    st.dataframe(df_out.head(25))
+    try:
+        if uploaded_file.name.lower().endswith(".csv"):
+            df_in = pd.read_csv(uploaded_file)
+        else:
+            df_in = pd.read_excel(uploaded_file)
+    except Exception as e:
+        st.error(f"Error reading file: {e}")
+        st.stop()
 
-    buffer = BytesIO()
-    with pd.ExcelWriter(buffer, engine="openpyxl") as writer:
-        df_out.to_excel(writer, index=False)
-    buffer.seek(0)
+    if df_in.empty:
+        st.error("Uploaded file is empty.")
+        st.stop()
+
+    with st.spinner("Processing data..."):
+        df_out = merge_all(df_in)
+
+    st.success("Processed successfully!")
+
+    # --- Preview & Full View ---
+    with st.expander("Preview (first 25 rows)", expanded=True):
+        st.dataframe(df_out.head(25), use_container_width=True)
+
+    with st.expander("Full Processed Data", expanded=False):
+        st.dataframe(df_out, use_container_width=True)
+
+    # --- Export to Excel ---
+    df_export = df_out.copy().fillna("").astype(str)
+    buf = BytesIO()
+    with pd.ExcelWriter(buf, engine="openpyxl") as writer:
+        df_export.to_excel(writer, index=False, sheet_name="Processed")
+    buf.seek(0)
 
     st.download_button(
-        label="📥 Download Processed Excel",
-        data=buffer,
-        file_name="processed_data.xlsx",
+        label="Download Processed Excel",
+        data=buf,
+        file_name="processed_automationhub.xlsx",
         mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     )
+
+    # --- Warnings Display ---
+    if df_out["Processing Warnings"].str.strip().any():
+        st.warning("Some rows have processing warnings:")
+        warning_df = df_out[df_out["Processing Warnings"].str.strip() != ""][["Processing Warnings"]]
+        st.dataframe(warning_df)
