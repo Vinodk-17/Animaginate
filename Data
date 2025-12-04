@@ -1,0 +1,96 @@
+Automation Hub ID
+Created On
+Annual Capacity Created (Hrs)_Previous Month
+Annual Capacity Group 
+Annual Hours based on Volume
+Annual Hours Number
+Automation Hub Link
+Automation Hub Phase
+Automation Hub Status
+Automation Name
+Automation Potential
+AutomatioHub Phase_Previous Month
+AutomatioHub Status_Previous Month
+AutomatioHubData_Stage1
+Benefiting Division 
+Business Unit
+Calculated Capacity Created Number
+Capacity created_Range
+Consolidated Actual Capacity
+Consolidated Tools
+Created By
+Created By (Delegate)
+Date Submitted
+Decommissioned date
+Department 
+Derived Process Location
+Derived Solution Deployed Date
+Division
+Estimated Delivery Date
+Expected Capacity Saves Annual Hrs Number
+Final Tools Classification
+Idea Submitter BU
+Idea Submitter Department
+Idea Submitter Division
+Idea Submitter E mail
+Idea Submitter Location
+Idea Submitter Login Id
+Idea Submitter Name
+Idea Submitter Super Department
+Idea Type
+Import Sequence Number
+is considered for YTD calculation
+is SDLC followed 
+Last Modified Date
+Modified By
+Modified By (Delegate)
+Modified On
+New Short Phase
+Owner
+Owning Business Unit
+Owning Team
+Owning User
+Process Execution Location
+Process Outcome
+Process Owner
+Process Warnings
+Record Created On
+Short Phase
+Short Phase Number
+Solution Depoyed Date
+Solution Type
+Status
+Status Reason
+Sub Department 
+Submitter's Business Unit
+Submitter's Department 
+Super Department 
+Time Zone Rule Version Number
+Tool for Reporting 
+Tool_Used_Combined
+tools_multiple
+Type of Automation
+UTC Conversion Time Zone Code
+Version Number
+
+
+
+
+
+there can be a case where in a single column there can be multiple tools are merge like power bi - altrexy so this should be counted as  2 tools for multiple value   condition in final tool 
+
+
+
+if any single input column data have othe - process rengineering considered that asother the append that in final consolidated tool 
+
+
+
+for consolidated tool column  : 
+
+
+
+if it contains "process reengineering" and "other", it will be labeled as "other". If it contains "process reengineering", "other", and "other/fdb", it will be labeled as "other".
+
+if it contains "process reengineering", "other", "other/tdb", and any other tool, it will be labeled as "other tool (Power BI Alteryx, etc.).
+
+if it contains "other/tdb" and "other", it will be labeled as "other",
