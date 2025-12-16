@@ -1,12 +1,10 @@
-Yep — this second screenshot adds one more block:
+Perfect — that’s the clean way in Power Pages.
 
-✅ **“Which tool or approach are you interested in”** = a **multi-select checkbox list** (not radio).
-
-Here’s the updated **Power Pages-ready** code that matches this layout (Division dropdown + support radios + tools checkbox list). Copy-paste.
+Here’s how to structure it when you have an **external JS Web File** (e.g., `/poh-intake.js`) and **external CSS** (e.g., `/poh-intake.css`). I’m also updating the HTML so it’s easy to target with IDs/classes, and the JS handles the same behavior (show/hide tools list based on radio).
 
 ---
 
-## HTML (paste in Power Pages Web Page)
+## 1) HTML (page code) — keep it mostly markup only
 
 ```html
 <div class="poh-page">
@@ -33,6 +31,7 @@ Here’s the updated **Power Pages-ready** code that matches this layout (Divisi
       <!-- Support type -->
       <div class="poh-row">
         <label class="poh-label">What type of support are you looking for today?*</label>
+
         <div class="poh-field poh-radio-group" role="radiogroup" aria-label="Support type">
           <label class="poh-radio">
             <input type="radio" name="supportType" value="general" />
@@ -67,26 +66,57 @@ Here’s the updated **Power Pages-ready** code that matches this layout (Divisi
 
 </div>
 
-<script>
-  // Optional behavior: show tool checklist only when "use case" is selected
-  (function () {
-    const toolRow = document.getElementById("toolRow");
-    const radios = document.querySelectorAll('input[name="supportType"]');
+<!-- Link your external CSS + JS web files -->
+<link rel="stylesheet" href="/poh-intake.css" />
+<script src="/poh-intake.js" defer></script>
+```
 
-    function toggleTools() {
-      const selected = document.querySelector('input[name="supportType"]:checked')?.value;
-      toolRow.style.display = (selected === "usecase") ? "flex" : "none";
+> ✅ In Power Pages, your Web File must be published and accessible at that URL path.
+
+---
+
+## 2) `poh-intake.js` (external JS Web File)
+
+```javascript
+(function () {
+  function qs(sel, root) { return (root || document).querySelector(sel); }
+  function qsa(sel, root) { return Array.from((root || document).querySelectorAll(sel)); }
+
+  function toggleTools() {
+    const toolRow = qs("#toolRow");
+    const selected = qs('input[name="supportType"]:checked')?.value;
+    if (!toolRow) return;
+
+    toolRow.style.display = (selected === "usecase") ? "flex" : "none";
+
+    // Optional: if hidden, clear checkboxes
+    if (selected !== "usecase") {
+      qsa('#toolRow input[type="checkbox"]').forEach(cb => cb.checked = false);
     }
+  }
 
-    radios.forEach(r => r.addEventListener("change", toggleTools));
+  function init() {
+    // Bind change events
+    qsa('input[name="supportType"]').forEach(r => {
+      r.addEventListener("change", toggleTools);
+    });
+
+    // Initial state
     toggleTools();
-  })();
-</script>
+  }
+
+  // Ensure DOM is ready (defer usually enough, this is extra-safe)
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+})();
 ```
 
 ---
 
-## CSS (same look as screenshot)
+## 3) `poh-intake.css` (external CSS Web File)
 
 ```css
 .poh-page{
@@ -97,7 +127,6 @@ Here’s the updated **Power Pages-ready** code that matches this layout (Divisi
   color:#1a1a1a;
 }
 
-.poh-section{ margin-top: 10px; }
 .poh-section-title{
   font-size: 32px;
   font-weight: 650;
@@ -135,21 +164,7 @@ Here’s the updated **Power Pages-ready** code that matches this layout (Divisi
   font-size: 14px;
 }
 
-.poh-radio-group{
-  display:flex;
-  flex-direction:column;
-  gap: 10px;
-  padding-top: 2px;
-}
-
-.poh-radio{
-  display:flex;
-  align-items:center;
-  gap: 10px;
-  font-size: 14px;
-}
-.poh-radio input{ transform: translateY(1px); }
-
+.poh-radio-group,
 .poh-checklist{
   display:flex;
   flex-direction:column;
@@ -157,13 +172,13 @@ Here’s the updated **Power Pages-ready** code that matches this layout (Divisi
   padding-top: 2px;
 }
 
+.poh-radio,
 .poh-check{
   display:flex;
   align-items:center;
   gap: 10px;
   font-size: 14px;
 }
-.poh-check input{ transform: translateY(1px); }
 
 @media (max-width: 820px){
   .poh-row{ flex-direction: column; }
@@ -173,12 +188,17 @@ Here’s the updated **Power Pages-ready** code that matches this layout (Divisi
 
 ---
 
-### Next (so it behaves like a real form)
+## 4) Common Power Pages gotchas (so your JS actually runs)
 
-If you want this to **save into Dataverse**, tell me which approach you’re using:
+* If your Web File is not loading, open DevTools → **Network** and check:
 
-1. **Basic Form / Advanced Form** (Dataverse table form)
-   or
-2. **Pure custom HTML + Web API** (create record via `/_api/...`)
+  * `GET /poh-intake.js` returns **200**, not 404.
+* In Power Pages, sometimes the file path becomes:
 
-I’ll wire the dropdown/radios/checkboxes to real fields exactly.
+  * `/poh-intake.js` **or** `/-/media/poh-intake.js` (depends on how it’s uploaded/published).
+* If you use jQuery in your org, you can— but the above is plain JS.
+
+---
+
+If you paste your **exact Web File URL** (the one that loads in browser), I’ll adjust the `<script src>` and `<link href>` to match your portal’s correct path so it works first try.
+
