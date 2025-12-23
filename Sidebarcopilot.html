@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Sidebar</title>
+  <style>
+    /* Basic font and layout settings */
+    body {
+      font-family: "Inter", sans-serif;
+      background-color: #f4f4f4;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Sidebar background and layout */
+    .side-pw-plt {
+      cursor: pointer;
+      padding: 1rem;
+      background: linear-gradient(135deg, #0061f2, #00bcd4); /* Gradient background */
+      color: white;
+      margin: 0.6rem 0;
+      height: auto;
+      display: flex;
+      align-items: center;
+      position: relative;
+      overflow: hidden; /* Prevents overflow from the fold */
+      border-radius: 8px; /* Rounded corners */
+    }
+
+    /* Text inside the sidebar */
+    .side-pw-plt p {
+      margin: 0;
+      font-size: 16px;
+    }
+
+    /* Optional corner fold effect */
+    .side-pw-plt::after {
+      content: "";
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 30px;
+      height: 30px;
+      background: #00bcd4; /* Fold color */
+      clip-path: polygon(100% 0, 100% 100%, 0 100%); /* Create the fold shape */
+    }
+
+    /* Hover effect */
+    .side-pw-plt:hover {
+      background: linear-gradient(135deg, #00bcd4, #0061f2); /* Reverse gradient on hover */
+      transition: background 0.3s ease-in-out;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Licensing and Costing Sidebar Item -->
+  <div class="side-pw-plt" onclick="window.open('https://jive.ms.com/docs/DOC-1075177')">
+    <p>Licensing and Costing</p>
+  </div>
+
+  <!-- Trainings Sidebar Item -->
+  <div class="side-pw-plt" onclick="window.open('https://jive.ms.com/docs/DOC-1102926')">
+    <p>Trainings</p>
+  </div>
+
+  <!-- Demos Sidebar Item -->
+  <div class="side-pw-plt" onclick="window.open('https://jive.ms.com/docs/DOC-1112100')">
+    <p>Demos</p>
+  </div>
+
+  <!-- Other AI-Enabled Power Platform Features Sidebar Item -->
+  <div class="side-pw-plt" onclick="window.open('https://jive.ms.com/docs/DOC-1112099')">
+    <p>Other AI Enable Power Platform Features</p>
+  </div>
+
+</body>
+</html>
