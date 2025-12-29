@@ -1,312 +1,168 @@
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Power Platform: AI Enabled Services</title>
-  <style>
-    :root{
-      --ink:#0b2239;
-      --muted:#2b3b4a;
-      --border:#1b1b1b;
-      --card-bg:#ffffff;
-      --page-bg:#ffffff;
-      --status-bg:#cfe8f5;
-      --shadow:0 1px 0 rgba(0,0,0,.06);
-    }
+<body style="margin:0;padding:0;font-family:Segoe UI,Arial,Helvetica,sans-serif;background:#ffffff;">
+  <!-- Outer wrapper table (Jive safe) -->
+  <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;">
+    <tr>
+      <td align="center" style="padding:16px;">
 
-    *{ box-sizing:border-box; }
-    body{
-      margin:0;
-      font-family: "Segoe UI", Arial, Helvetica, sans-serif;
-      background:var(--page-bg);
-      color:var(--ink);
-    }
+        <!-- Fixed-width container (prevents Jive narrow shrink) -->
+        <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="1100" style="border-collapse:collapse;width:1100px;max-width:1100px;">
+          <!-- Row 1: 2 cards -->
+          <tr>
+            <td width="50%" valign="top" style="padding:10px;">
+              <!-- Card -->
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;border:2px solid #1b1b1b;background:#fff;">
+                <tr>
+                  <td align="center" style="padding:14px 14px 8px;">
+                    <!-- icon (replace with <img>) -->
+                    <div style="width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#7c3aed,#22c55e,#2563eb);"></div>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="padding:0 14px 10px;">
+                    <div style="width:100%;border:1px solid #000;background:#f7fbff;padding:8px 10px;font-weight:800;color:#1d4f91;text-transform:uppercase;letter-spacing:.3px;font-size:16px;">
+                      COPILOT<br/>STUDIO
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:10px 16px 0;">
+                    <div style="font-size:14px;line-height:1.35;color:#2b3b4a;font-weight:600;">
+                      Copilot studio is a capability within the Power Platform that allows users to build, customize and deploy AI agents.
+                    </div>
+                    <ul style="margin:10px 0 0;padding-left:18px;">
+                      <li style="font-size:14px;line-height:1.35;color:#2b3b4a;font-weight:600;margin-bottom:10px;">Agents can handle conversational interactions, knowledge retrieval, task execution and workflows</li>
+                      <li style="font-size:14px;line-height:1.35;color:#2b3b4a;font-weight:600;margin-bottom:10px;">Agents can take user input, request/upload documents, extract/classify relevant information and handle validation</li>
+                      <li style="font-size:14px;line-height:1.35;color:#2b3b4a;font-weight:600;margin-bottom:10px;">Agents can trigger workflows to share data, store data, or request approvals</li>
+                    </ul>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:14px 16px 16px;">
+                    <div style="border:2px solid #000;background:#cfe8f5;padding:10px 12px;font-size:12.5px;font-weight:700;color:#103a4a;text-align:center;">
+                      Status: Copilot Studio is currently approved and available for Pro Dev use cases at Morgan Stanley
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
 
-    .page{
-      max-width:1400px;
-      margin:0 auto;
-      padding:22px 18px 28px;
-    }
+            <td width="50%" valign="top" style="padding:10px;">
+              <!-- Card -->
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;border:2px solid #1b1b1b;background:#fff;">
+                <tr>
+                  <td align="center" style="padding:14px 14px 8px;">
+                    <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#0ea5e9,#f97316,#a855f7);"></div>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="padding:0 14px 10px;">
+                    <div style="width:100%;border:1px solid #000;background:#f7fbff;padding:8px 10px;font-weight:800;color:#1d4f91;text-transform:uppercase;letter-spacing:.3px;font-size:16px;">
+                      EMBEDDED<br/>COPILOTS
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:10px 16px 0;">
+                    <div style="font-size:14px;line-height:1.35;color:#2b3b4a;font-weight:600;">
+                      Copilot drafts contextual answers to queries in both chat and email, in addition to providing an interactive chat experience over knowledge bases and case history.
+                    </div>
+                    <ul style="margin:10px 0 0;padding-left:18px;">
+                      <li style="font-size:14px;line-height:1.35;color:#2b3b4a;font-weight:600;margin-bottom:10px;">Copilot in Dynamics 365 customer service offers:</li>
+                      <li style="font-size:14px;line-height:1.35;color:#2b3b4a;font-weight:600;margin-bottom:10px;">Summarize a case and conversation</li>
+                      <li style="font-size:14px;line-height:1.35;color:#2b3b4a;font-weight:600;margin-bottom:10px;">Respond to questions</li>
+                      <li style="font-size:14px;line-height:1.35;color:#2b3b4a;font-weight:600;margin-bottom:10px;">Compose an email</li>
+                      <li style="font-size:14px;line-height:1.35;color:#2b3b4a;font-weight:600;margin-bottom:10px;">Ask about KB sources and trusted domains</li>
+                    </ul>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:14px 16px 16px;">
+                    <div style="border:2px solid #000;background:#cfe8f5;padding:10px 12px;font-size:12.5px;font-weight:700;color:#103a4a;text-align:center;">
+                      Status: Copilot for D365 is under review for foundational approval at Morgan Stanley
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
 
-    h1{
-      font-size:34px;
-      font-weight:800;
-      margin:0 0 16px;
-      letter-spacing:.2px;
-    }
+          <!-- Row 2: 2 cards -->
+          <tr>
+            <td width="50%" valign="top" style="padding:10px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;border:2px solid #1b1b1b;background:#fff;">
+                <tr>
+                  <td align="center" style="padding:14px 14px 8px;">
+                    <div style="width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#111827,#a855f7,#7c3aed);"></div>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="padding:0 14px 10px;">
+                    <div style="width:100%;border:1px solid #000;background:#f7fbff;padding:8px 10px;font-weight:800;color:#1d4f91;text-transform:uppercase;letter-spacing:.3px;font-size:16px;">
+                      POWER APPS –<br/>PLAN DESIGNER
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:10px 16px 0;">
+                    <div style="font-size:14px;line-height:1.35;color:#2b3b4a;font-weight:600;">
+                      Plan designer is a copilot-first development tool that lets you quickly create comprehensive business solutions.
+                    </div>
+                    <ul style="margin:10px 0 0;padding-left:18px;">
+                      <li style="font-size:14px;line-height:1.35;color:#2b3b4a;font-weight:600;margin-bottom:10px;">Describe your use case in natural language and add relevant images</li>
+                      <li style="font-size:14px;line-height:1.35;color:#2b3b4a;font-weight:600;margin-bottom:10px;">Generates a complete Power Platform solution tailored to your needs</li>
+                    </ul>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:14px 16px 16px;">
+                    <div style="border:2px solid #000;background:#cfe8f5;padding:10px 12px;font-size:12.5px;font-weight:700;color:#103a4a;text-align:center;">
+                      Status: Plan designer is not yet GA at Morgan Stanley
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
 
-    .grid{
-      display:grid;
-      grid-template-columns: repeat(4, minmax(240px, 1fr));
-      gap:18px;
-      align-items:stretch;
-    }
+            <td width="50%" valign="top" style="padding:10px;">
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border-collapse:collapse;border:2px solid #1b1b1b;background:#fff;">
+                <tr>
+                  <td align="center" style="padding:14px 14px 8px;">
+                    <div style="width:56px;height:56px;border-radius:14px;background:linear-gradient(135deg,#0f172a,#1d4ed8,#0ea5e9);"></div>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center" style="padding:0 14px 10px;">
+                    <div style="width:100%;border:1px solid #000;background:#f7fbff;padding:8px 10px;font-weight:800;color:#1d4f91;text-transform:uppercase;letter-spacing:.3px;font-size:16px;">
+                      AI BUILDER –<br/>PROMPTS
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:10px 16px 0;">
+                    <div style="font-size:14px;line-height:1.35;color:#2b3b4a;font-weight:600;">
+                      AI Builder is a feature within the Power Platform that allows users to easily add AI capabilities into their workflows, apps and processes.
+                    </div>
+                    <ul style="margin:10px 0 0;padding-left:18px;">
+                      <li style="font-size:14px;line-height:1.35;color:#2b3b4a;font-weight:600;margin-bottom:10px;">Add AI capabilities into workflows, apps and processes</li>
+                      <li style="font-size:14px;line-height:1.35;color:#2b3b4a;font-weight:600;margin-bottom:10px;">Ready-made models and ability to train custom models</li>
+                      <li style="font-size:14px;line-height:1.35;color:#2b3b4a;font-weight:600;margin-bottom:10px;">Examples: document classification, entity extraction from forms</li>
+                    </ul>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding:14px 16px 16px;">
+                    <div style="border:2px solid #000;background:#cfe8f5;padding:10px 12px;font-size:12.5px;font-weight:700;color:#103a4a;text-align:center;">
+                      Status: AI Builder is currently approved and available for Pro Dev use cases at Morgan Stanley
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
 
-    .card{
-      background:var(--card-bg);
-      border:2px solid var(--border);
-      box-shadow:var(--shadow);
-      display:flex;
-      flex-direction:column;
-      min-height:520px;
-    }
-
-    .card-top{
-      padding:18px 16px 10px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-      align-items:center;
-    }
-
-    .icon{
-      width:64px;
-      height:64px;
-      display:grid;
-      place-items:center;
-    }
-
-    /* Simple “MS-style” colorful placeholder icons (replace with real images if you want) */
-    .icon svg{ width:64px; height:64px; display:block; }
-
-    .title{
-      width:100%;
-      text-align:center;
-      font-size:18px;
-      font-weight:800;
-      color:#1d4f91;
-      letter-spacing:.3px;
-      text-transform:uppercase;
-      padding:8px 10px;
-      border:1px solid #000;
-      background:#f7fbff;
-    }
-
-    .body{
-      padding:14px 16px 0;
-      flex:1;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-
-    .body p{
-      margin:0;
-      font-size:14.5px;
-      line-height:1.35;
-      color:var(--muted);
-      font-weight:600;
-    }
-
-    ul{
-      margin:0;
-      padding-left:18px;
-      display:flex;
-      flex-direction:column;
-      gap:10px;
-    }
-    li{
-      font-size:14.5px;
-      line-height:1.35;
-      color:var(--muted);
-      font-weight:600;
-    }
-
-    .status-wrap{
-      padding:14px 16px 16px;
-    }
-
-    .status{
-      border:2px solid #000;
-      background:var(--status-bg);
-      padding:10px 12px;
-      font-size:13px;
-      font-weight:700;
-      color:#103a4a;
-      text-align:center;
-    }
-
-    /* Make layout similar to screenshot: tall cards with status at bottom */
-    .card.compact .body{ gap:12px; }
-    .card.compact ul{ gap:12px; }
-
-    /* Responsive */
-    @media (max-width:1200px){
-      .grid{ grid-template-columns: repeat(2, minmax(240px, 1fr)); }
-      .card{ min-height:480px; }
-    }
-    @media (max-width:640px){
-      h1{ font-size:26px; }
-      .grid{ grid-template-columns: 1fr; }
-      .card{ min-height:auto; }
-    }
-  </style>
-</head>
-
-<body>
-  <main class="page">
-    <h1>Power Platform: AI Enabled Services</h1>
-
-    <section class="grid">
-      <!-- 1) COPILOT STUDIO -->
-      <article class="card compact">
-        <div class="card-top">
-          <div class="icon" aria-hidden="true">
-            <!-- Placeholder icon -->
-            <svg viewBox="0 0 64 64" role="img">
-              <defs>
-                <linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0" stop-color="#7c3aed"/>
-                  <stop offset="0.5" stop-color="#22c55e"/>
-                  <stop offset="1" stop-color="#2563eb"/>
-                </linearGradient>
-              </defs>
-              <path d="M18 12h18a10 10 0 0 1 10 10v18a10 10 0 0 1-10 10H18A10 10 0 0 1 8 40V22A10 10 0 0 1 18 12Z"
-                    fill="url(#g1)"/>
-              <path d="M22 24h20v16H22z" fill="rgba(255,255,255,.35)"/>
-            </svg>
-          </div>
-          <div class="title">COPILOT STUDIO</div>
-        </div>
-
-        <div class="body">
-          <p>
-            Copilot studio is a capability within the Power Platform that allows users to build,
-            customize and deploy AI agents.
-          </p>
-          <ul>
-            <li>Agents can handle conversational interactions, knowledge retrieval, task execution and workflows</li>
-            <li>Agents can take user input, request/upload documents, extract/classify relevant information and handle validation (e.g., asking user for clarifications)</li>
-            <li>Agents can trigger workflows to share data, store data, or request approvals</li>
-          </ul>
-        </div>
-
-        <div class="status-wrap">
-          <div class="status">
-            Status: Copilot Studio is currently approved and available for Pro Dev use cases at Morgan Stanley
-          </div>
-        </div>
-      </article>
-
-      <!-- 2) EMBEDDED COPILOTS -->
-      <article class="card compact">
-        <div class="card-top">
-          <div class="icon" aria-hidden="true">
-            <svg viewBox="0 0 64 64" role="img">
-              <defs>
-                <linearGradient id="g2" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0" stop-color="#0ea5e9"/>
-                  <stop offset="0.5" stop-color="#f97316"/>
-                  <stop offset="1" stop-color="#a855f7"/>
-                </linearGradient>
-              </defs>
-              <path d="M32 10c9 0 18 7 18 16 0 6-4 10-9 12l-2 10-8-7H32c-9 0-18-7-18-16S23 10 32 10Z"
-                    fill="url(#g2)"/>
-              <circle cx="26" cy="28" r="3" fill="rgba(255,255,255,.55)"/>
-              <circle cx="32" cy="28" r="3" fill="rgba(255,255,255,.55)"/>
-              <circle cx="38" cy="28" r="3" fill="rgba(255,255,255,.55)"/>
-            </svg>
-          </div>
-          <div class="title">EMBEDDED COPILOTS</div>
-        </div>
-
-        <div class="body">
-          <p>
-            Copilot drafts contextual answers to queries in both chat and email, in addition to
-            providing an interactive chat experience over knowledge bases and case history.
-          </p>
-          <ul>
-            <li>Copilot in Dynamics 365 customer service offers the following capabilities:</li>
-            <li>Summarize a case and conversation</li>
-            <li>Respond to questions</li>
-            <li>Compose an email</li>
-            <li>Ask a question about knowledge base sources and trusted domains</li>
-          </ul>
-        </div>
-
-        <div class="status-wrap">
-          <div class="status">
-            Status: Copilot for D365 is under review for foundational approval at Morgan Stanley
-          </div>
-        </div>
-      </article>
-
-      <!-- 3) POWER APPS – PLAN DESIGNER -->
-      <article class="card compact">
-        <div class="card-top">
-          <div class="icon" aria-hidden="true">
-            <svg viewBox="0 0 64 64" role="img">
-              <defs>
-                <linearGradient id="g3" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0" stop-color="#111827"/>
-                  <stop offset="0.55" stop-color="#a855f7"/>
-                  <stop offset="1" stop-color="#7c3aed"/>
-                </linearGradient>
-              </defs>
-              <path d="M12 18 30 8l22 12v24L30 56 12 44V18Z" fill="url(#g3)"/>
-              <path d="M30 8v48" stroke="rgba(255,255,255,.35)" stroke-width="3"/>
-            </svg>
-          </div>
-          <div class="title">POWER APPS – PLAN DESIGNER</div>
-        </div>
-
-        <div class="body">
-          <p>
-            Plan designer is a copilot-first development tool that lets you quickly create comprehensive business solutions.
-          </p>
-          <ul>
-            <li>Describe your business use case in natural language and add relevant images, like business process flows or screenshots of legacy apps</li>
-            <li>Plan designer generates a complete Power Platform solution tailored to your needs.</li>
-          </ul>
-        </div>
-
-        <div class="status-wrap">
-          <div class="status">
-            Status: Plan designer is not yet GA at Morgan Stanley
-          </div>
-        </div>
-      </article>
-
-      <!-- 4) AI BUILDER – PROMPTS -->
-      <article class="card compact">
-        <div class="card-top">
-          <div class="icon" aria-hidden="true">
-            <svg viewBox="0 0 64 64" role="img">
-              <defs>
-                <linearGradient id="g4" x1="0" y1="0" x2="1" y2="1">
-                  <stop offset="0" stop-color="#0f172a"/>
-                  <stop offset="0.55" stop-color="#1d4ed8"/>
-                  <stop offset="1" stop-color="#0ea5e9"/>
-                </linearGradient>
-              </defs>
-              <path d="M32 6l10 6 12 4-2 13 2 13-12 4-10 6-10-6-12-4 2-13-2-13 12-4 10-6Z"
-                    fill="url(#g4)"/>
-              <path d="M24 32a8 8 0 1 0 16 0 8 8 0 0 0-16 0Z" fill="rgba(255,255,255,.25)"/>
-              <path d="M32 22v4m0 16v-4m10-6h-4M26 32h-4" stroke="rgba(255,255,255,.55)" stroke-width="2" stroke-linecap="round"/>
-            </svg>
-          </div>
-          <div class="title">AI BUILDER – PROMPTS</div>
-        </div>
-
-        <div class="body">
-          <p>
-            AI Builder is a feature within the Power Platform that allows users to easily add AI capabilities into their workflows, apps and processes.
-          </p>
-          <ul>
-            <li>AI Builder is a feature within the Power Platform that allows users to easily add AI capabilities into their workflows, apps and processes</li>
-            <li>AI Builder contains ready-made models, and lets you build and train custom models within your own</li>
-            <li>Examples include classifying documents into mortgages vs. credit card apps, or extract custom entities from forms</li>
-          </ul>
-        </div>
-
-        <div class="status-wrap">
-          <div class="status">
-            Status: AI Builder is currently approved and available for Pro Dev use cases at Morgan Stanley
-          </div>
-        </div>
-      </article>
-    </section>
-  </main>
+      </td>
+    </tr>
+  </table>
 </body>
-</html>
+
