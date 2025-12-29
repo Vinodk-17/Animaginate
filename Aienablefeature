@@ -1,0 +1,128 @@
+<body style="margin:0;font-family:Segoe UI,Arial,Helvetica,sans-serif;background:#fff;color:#0b2239;">
+  <div style="max-width:1400px;margin:0 auto;padding:18px;">
+    <div style="display:grid;grid-template-columns:repeat(4,minmax(240px,1fr));gap:18px;align-items:stretch;">
+
+      <!-- COPILOT STUDIO -->
+      <div style="background:#fff;border:2px solid #1b1b1b;display:flex;flex-direction:column;min-height:520px;">
+        <div style="padding:18px 16px 10px;display:flex;flex-direction:column;gap:10px;align-items:center;">
+          <div style="width:64px;height:64px;display:grid;place-items:center;">
+            <!-- replace with your icon -->
+            <div style="width:64px;height:64px;border-radius:14px;background:linear-gradient(135deg,#7c3aed,#22c55e,#2563eb);"></div>
+          </div>
+          <div style="width:100%;text-align:center;font-size:18px;font-weight:800;color:#1d4f91;letter-spacing:.3px;text-transform:uppercase;padding:8px 10px;border:1px solid #000;background:#f7fbff;">
+            COPILOT STUDIO
+          </div>
+        </div>
+
+        <div style="padding:14px 16px 0;flex:1;display:flex;flex-direction:column;gap:10px;">
+          <div style="font-size:14.5px;line-height:1.35;color:#2b3b4a;font-weight:600;">
+            Copilot studio is a capability within the Power Platform that allows users to build, customize and deploy AI agents.
+          </div>
+          <ul style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:10px;">
+            <li style="font-size:14.5px;line-height:1.35;color:#2b3b4a;font-weight:600;">Agents can handle conversational interactions, knowledge retrieval, task execution and workflows</li>
+            <li style="font-size:14.5px;line-height:1.35;color:#2b3b4a;font-weight:600;">Agents can take user input, request/upload documents, extract/classify relevant information and handle validation (e.g., asking user for clarifications)</li>
+            <li style="font-size:14.5px;line-height:1.35;color:#2b3b4a;font-weight:600;">Agents can trigger workflows to share data, store data, or request approvals</li>
+          </ul>
+        </div>
+
+        <div style="padding:14px 16px 16px;">
+          <div style="border:2px solid #000;background:#cfe8f5;padding:10px 12px;font-size:13px;font-weight:700;color:#103a4a;text-align:center;">
+            Status: Copilot Studio is currently approved and available for Pro Dev use cases at Morgan Stanley
+          </div>
+        </div>
+      </div>
+
+      <!-- EMBEDDED COPILOTS -->
+      <div style="background:#fff;border:2px solid #1b1b1b;display:flex;flex-direction:column;min-height:520px;">
+        <div style="padding:18px 16px 10px;display:flex;flex-direction:column;gap:10px;align-items:center;">
+          <div style="width:64px;height:64px;display:grid;place-items:center;">
+            <!-- replace with your icon -->
+            <div style="width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#0ea5e9,#f97316,#a855f7);"></div>
+          </div>
+          <div style="width:100%;text-align:center;font-size:18px;font-weight:800;color:#1d4f91;letter-spacing:.3px;text-transform:uppercase;padding:8px 10px;border:1px solid #000;background:#f7fbff;">
+            EMBEDDED COPILOTS
+          </div>
+        </div>
+
+        <div style="padding:14px 16px 0;flex:1;display:flex;flex-direction:column;gap:10px;">
+          <div style="font-size:14.5px;line-height:1.35;color:#2b3b4a;font-weight:600;">
+            Copilot drafts contextual answers to queries in both chat and email, in addition to providing an interactive chat experience over knowledge bases and case history.
+          </div>
+          <ul style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:10px;">
+            <li style="font-size:14.5px;line-height:1.35;color:#2b3b4a;font-weight:600;">Copilot in Dynamics 365 customer service offers the following capabilities:</li>
+            <li style="font-size:14.5px;line-height:1.35;color:#2b3b4a;font-weight:600;">Summarize a case and conversation</li>
+            <li style="font-size:14.5px;line-height:1.35;color:#2b3b4a;font-weight:600;">Respond to questions</li>
+            <li style="font-size:14.5px;line-height:1.35;color:#2b3b4a;font-weight:600;">Compose an email</li>
+            <li style="font-size:14.5px;line-height:1.35;color:#2b3b4a;font-weight:600;">Ask a question about knowledge base sources and trusted domains</li>
+          </ul>
+        </div>
+
+        <div style="padding:14px 16px 16px;">
+          <div style="border:2px solid #000;background:#cfe8f5;padding:10px 12px;font-size:13px;font-weight:700;color:#103a4a;text-align:center;">
+            Status: Copilot for D365 is under review for foundational approval at Morgan Stanley
+          </div>
+        </div>
+      </div>
+
+      <!-- POWER APPS – PLAN DESIGNER -->
+      <div style="background:#fff;border:2px solid #1b1b1b;display:flex;flex-direction:column;min-height:520px;">
+        <div style="padding:18px 16px 10px;display:flex;flex-direction:column;gap:10px;align-items:center;">
+          <div style="width:64px;height:64px;display:grid;place-items:center;">
+            <!-- replace with your icon -->
+            <div style="width:64px;height:64px;clip-path:polygon(50% 0%, 95% 25%, 95% 75%, 50% 100%, 5% 75%, 5% 25%);background:linear-gradient(135deg,#111827,#a855f7,#7c3aed);"></div>
+          </div>
+          <div style="width:100%;text-align:center;font-size:18px;font-weight:800;color:#1d4f91;letter-spacing:.3px;text-transform:uppercase;padding:8px 10px;border:1px solid #000;background:#f7fbff;">
+            POWER APPS – PLAN DESIGNER
+          </div>
+        </div>
+
+        <div style="padding:14px 16px 0;flex:1;display:flex;flex-direction:column;gap:10px;">
+          <div style="font-size:14.5px;line-height:1.35;color:#2b3b4a;font-weight:600;">
+            Plan designer is a copilot-first development tool that lets you quickly create comprehensive business solutions.
+          </div>
+          <ul style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:10px;">
+            <li style="font-size:14.5px;line-height:1.35;color:#2b3b4a;font-weight:600;">Describe your business use case in natural language and add relevant images, like business process flows or screenshots of legacy apps</li>
+            <li style="font-size:14.5px;line-height:1.35;color:#2b3b4a;font-weight:600;">Plan designer generates a complete Power Platform solution tailored to your needs.</li>
+          </ul>
+        </div>
+
+        <div style="padding:14px 16px 16px;">
+          <div style="border:2px solid #000;background:#cfe8f5;padding:10px 12px;font-size:13px;font-weight:700;color:#103a4a;text-align:center;">
+            Status: Plan designer is not yet GA at Morgan Stanley
+          </div>
+        </div>
+      </div>
+
+      <!-- AI BUILDER – PROMPTS -->
+      <div style="background:#fff;border:2px solid #1b1b1b;display:flex;flex-direction:column;min-height:520px;">
+        <div style="padding:18px 16px 10px;display:flex;flex-direction:column;gap:10px;align-items:center;">
+          <div style="width:64px;height:64px;display:grid;place-items:center;">
+            <!-- replace with your icon -->
+            <div style="width:64px;height:64px;border-radius:18px;background:linear-gradient(135deg,#0f172a,#1d4ed8,#0ea5e9);"></div>
+          </div>
+          <div style="width:100%;text-align:center;font-size:18px;font-weight:800;color:#1d4f91;letter-spacing:.3px;text-transform:uppercase;padding:8px 10px;border:1px solid #000;background:#f7fbff;">
+            AI BUILDER – PROMPTS
+          </div>
+        </div>
+
+        <div style="padding:14px 16px 0;flex:1;display:flex;flex-direction:column;gap:10px;">
+          <div style="font-size:14.5px;line-height:1.35;color:#2b3b4a;font-weight:600;">
+            AI Builder is a feature within the Power Platform that allows users to easily add AI capabilities into their workflows, apps and processes
+          </div>
+          <ul style="margin:0;padding-left:18px;display:flex;flex-direction:column;gap:10px;">
+            <li style="font-size:14.5px;line-height:1.35;color:#2b3b4a;font-weight:600;">AI Builder is a feature within the Power Platform that allows users to easily add AI capabilities into their workflows, apps and processes</li>
+            <li style="font-size:14.5px;line-height:1.35;color:#2b3b4a;font-weight:600;">AI Builder contains ready-made models, and lets you build and train custom models within your own</li>
+            <li style="font-size:14.5px;line-height:1.35;color:#2b3b4a;font-weight:600;">Examples include classifying documents into mortgages vs. credit card apps, or extract custom entities from forms</li>
+          </ul>
+        </div>
+
+        <div style="padding:14px 16px 16px;">
+          <div style="border:2px solid #000;background:#cfe8f5;padding:10px 12px;font-size:13px;font-weight:700;color:#103a4a;text-align:center;">
+            Status: AI Builder is currently approved and available for Pro Dev use cases at Morgan Stanley
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</body>
