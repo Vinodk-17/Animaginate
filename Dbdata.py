@@ -1,10 +1,9 @@
-import io
 import re
 import pandas as pd
 import streamlit as st
 
-st.set_page_config(page_title="CSV Merge → Excel", layout="centered")
-st.title("Merge 2 CSVs (Fleet + Squad) → Download Excel")
+st.set_page_config(page_title="CSV Merge (Fleet + Squad)", layout="centered")
+st.title("Merge 2 CSVs (Fleet + Squad) → Download Merged CSV")
 
 fleet_file = st.file_uploader("Upload Fleet CSV (fleet_guid, fleet_name)", type=["csv"])
 squad_file = st.file_uploader("Upload Squad CSV (squad_guid, squad_name, fleet_guid)", type=["csv"])
@@ -22,14 +21,15 @@ def make_join_key(x) -> str:
     return re.sub(r"[^a-z0-9]", "", s)
 
 def read_csv(uploaded_file) -> pd.DataFrame:
-    # dtype=str keeps GUIDs safe (no scientific notation)
+    # dtype=str prevents GUIDs becoming scientific notation
+    # encoding_errors ignore avoids crashing on weird characters
     return pd.read_csv(uploaded_file, dtype=str, encoding_errors="ignore")
 
 if fleet_file and squad_file:
     fleet_df = norm_cols(read_csv(fleet_file))
     squad_df = norm_cols(read_csv(squad_file))
 
-    # Required columns check
+    # Validate columns
     need_fleet = {"fleet_guid", "fleet_name"}
     need_squad = {"squad_guid", "squad_name", "fleet_guid"}
 
@@ -43,7 +43,7 @@ if fleet_file and squad_file:
         st.error(f"Squad CSV missing columns: {ms}")
         st.stop()
 
-    # Temporary join keys (do NOT modify original fleet_guid values)
+    # TEMP join keys
     fleet_df["_join_key"] = fleet_df["fleet_guid"].apply(make_join_key)
     squad_df["_join_key"] = squad_df["fleet_guid"].apply(make_join_key)
 
@@ -52,35 +52,27 @@ if fleet_file and squad_file:
         fleet_df[["_join_key", "fleet_name"]],
         on="_join_key",
         how="left"
-    )
+    ).drop(columns=["_join_key"])
 
-    # Remove temp key from final output to keep data "as it is"
-    merged_df = merged_df.drop(columns=["_join_key"])
-
-    st.subheader("Merged Preview")
+    st.subheader("Preview: Merged Data")
     st.dataframe(merged_df, use_container_width=True)
 
     unmatched = merged_df[merged_df["fleet_name"].isna()]
     if not unmatched.empty:
         st.warning(f"{len(unmatched)} rows not matched (fleet_name missing).")
-        with st.expander("Show unmatched"):
+        with st.expander("Show unmatched rows"):
             st.dataframe(unmatched, use_container_width=True)
 
-    # Create Excel output in memory
-    output = io.BytesIO()
-    with pd.ExcelWriter(output, engine="openpyxl") as writer:
-        fleet_df.drop(columns=["_join_key"]).to_excel(writer, sheet_name="fleet_master", index=False)
-        squad_df.drop(columns=["_join_key"]).to_excel(writer, sheet_name="squad_master", index=False)
-        merged_df.to_excel(writer, sheet_name="merged", index=False)
-        if not unmatched.empty:
-            unmatched.to_excel(writer, sheet_name="unmatched", index=False)
+    # Output CSV bytes
+    csv_bytes = merged_df.to_csv(index=False).encode("utf-8")
 
     st.download_button(
-        "Download Excel Output",
-        data=output.getvalue(),
-        file_name="fleet_squad_merged.xlsx",
-        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        "Download Merged CSV",
+        data=csv_bytes,
+        file_name="fleet_squad_merged.csv",
+        mime="text/csv"
     )
+
 else:
-    st.info("Upload both CSV files to merge and download Excel.")
+    st.info("Upload both CSV files to merge.")
     
